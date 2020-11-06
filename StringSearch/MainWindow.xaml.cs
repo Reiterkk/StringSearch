@@ -26,9 +26,16 @@ namespace StringSearch
         private readonly string[] letters = new string[dimension] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
         private readonly string[] wordList = new string[dimension * dimension * dimension * dimension];
         private Stopwatch timer = new Stopwatch();
+        private string searchedString = "";
+        private bool listIsCreated = false;
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void TbSearchString_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            searchedString = TbSearchString.Text;
         }
         private async void BtnGenerateRandomWordList_Click(object sender, RoutedEventArgs e)
         {
@@ -49,24 +56,60 @@ namespace StringSearch
             timer.Stop();
             LblUpdateUiCreateListTime.Content = timer.ElapsedMilliseconds + " ms";
             LblListboxItemCount.Content = LbRandomWordList.Items.Count;
+            listIsCreated = true;
         }
 
         private void BtnSerialLinearSearch_Click(object sender, RoutedEventArgs e)
         {
-            string searchedString = TbSearchString.Text;
-            List<string> matchingWords = new List<string>();
-            timer.Reset();
-            timer.Start();
-            WordList.SerialLinearSearch(wordList, searchedString, matchingWords);
-            timer.Stop();
-            LblSerialLinearSearchTime.Content = timer.ElapsedMilliseconds + " ms";
+            if (ListIsCreated())
+            {
 
-            timer.Reset();
-            timer.Start();
-            WordList.DisplayList(matchingWords, LbSerialLinearSearchResults);
-            timer.Stop();
-            LblSerialLinearSearchUITime.Content = timer.ElapsedMilliseconds + " ms";
-            LblSerialLinearSearchWordsCount.Content = LbSerialLinearSearchResults.Items.Count;
+                List<string> matchingWords = new List<string>();
+                timer.Reset();
+                timer.Start();
+                WordList.SerialLinearSearch(wordList, searchedString, matchingWords);
+                timer.Stop();
+                LblSerialLinearSearchTime.Content = timer.ElapsedMilliseconds + " ms";
+
+                timer.Reset();
+                timer.Start();
+                WordList.DisplayList(matchingWords, LbSerialLinearSearchResults);
+                timer.Stop();
+                LblSerialLinearSearchUITime.Content = timer.ElapsedMilliseconds + " ms";
+                LblSerialLinearSearchWordsCount.Content = LbSerialLinearSearchResults.Items.Count;
+            }
+        }
+
+        private void BtnFindAllMethod_Click(object sender, RoutedEventArgs e)
+        {
+            if (ListIsCreated())
+            {
+
+                timer.Reset();
+                timer.Start();
+                string[] matchingWords = Array.FindAll(wordList, element => element.StartsWith(searchedString, StringComparison.Ordinal));
+                timer.Stop();
+                LblFindAllMethodTime.Content = timer.ElapsedMilliseconds + " ms";
+
+                timer.Reset();
+                timer.Start();
+                WordList.Display(matchingWords, LbFindAllMethodResults);
+                timer.Stop();
+                LblFindAllMethodUITime.Content = timer.ElapsedMilliseconds + " ms";
+                LblFindAllMethodWordsCount.Content = LbSerialLinearSearchResults.Items.Count;
+            }
+        }
+
+        private bool ListIsCreated()
+        {
+            if (listIsCreated)
+            {
+                return true;
+            }
+            string message = "Es wurde noch keine Wortliste erstellt, daher gibt es noch nichts zu durchsuchen! Bitte zuerst eine Wortliste generieren.";
+            string title = "Keine Wortliste vorhanden";
+            MessageBox.Show(message, title);
+            return false;
         }
     }
 }
