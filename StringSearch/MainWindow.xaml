@@ -5,8 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StringSearch"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="String Search" Height="1080" Width="1920">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="BtnGenerateRandomWordList" Content="Wortliste generieren" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="55,45,0,0" VerticalAlignment="Top" Click="BtnGenerateRandomWordList_Click"/>
+        <ListBox x:Name="LbRandomWordList" Grid.ColumnSpan="2" Margin="55,90,1753,40" SelectionChanged="LbRandomWordList_SelectionChanged"/>
+        
 
     </Grid>
 </Window>
