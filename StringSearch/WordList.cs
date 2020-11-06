@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace StringSearch
 {
@@ -12,6 +14,7 @@ namespace StringSearch
             int index = 0;
             for (int i = 0; i < dimension; i++)
             {
+                //Thread.Sleep(400);
                 for (int j = 0; j < dimension; j++)
                 {
                     for (int k = 0; k < dimension; k++)
@@ -43,10 +46,33 @@ namespace StringSearch
 
         public static void Display(string[] wordList, ListBox listBox)
         {
+            listBox.Items.Clear();
             for (int i = 0; i < wordList.Length; i++)
             {
                 listBox.Items.Add(wordList[i]);
             }
+        }
+
+        public static void DisplayList(List<string> wordList, ListBox listBox)
+        {
+            listBox.Items.Clear();
+            for (int i = 0; i < wordList.Count; i++)
+            {
+                listBox.Items.Add(wordList[i]);
+            }
+        }
+
+        public static void SerialLinearSearch(string[] wordList, string searchedString, List<string> matchingWords)
+        {
+            //List<string> matchingWords = new List<string>();
+            for (int i = 0; i < wordList.Length; i++)
+            {
+                if (wordList[i].StartsWith(searchedString))
+                {
+                    matchingWords.Add(wordList[i]);
+                }
+            }
+            //return matchingWords;
         }
     }
 }
