@@ -25,8 +25,13 @@ namespace StringSearch
         const int dimension = 26;
         private readonly string[] letters = new string[dimension] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
         private readonly string[] wordList = new string[dimension * dimension * dimension * dimension];
+        private string[] sortedWordList;
         private readonly Stopwatch timer = new Stopwatch();
         private string searchedString = "";
+        private bool sortedListIsNotAvailable = true;
+        List<string> matchingWords = new List<string>();
+
+        public int MaxAllowedThreads { get; set; } = 1;
         public MainWindow()
         {
             InitializeComponent();
@@ -62,7 +67,7 @@ namespace StringSearch
         {
             if (WordList.IsAvailable())
             {
-                List<string> matchingWords = new List<string>();
+                matchingWords.Clear();
                 timer.Reset();
                 timer.Start();
                 WordList.SerialLinearSearch(wordList, searchedString, matchingWords);
@@ -84,7 +89,8 @@ namespace StringSearch
             {
                 timer.Reset();
                 timer.Start();
-                string[] matchingWords = Array.FindAll(wordList, element => element.StartsWith(searchedString, StringComparison.Ordinal));
+                //string[] matchingWords = Array.FindAll(wordList, element => element.StartsWith(searchedString, StringComparison.Ordinal));
+                string[] matchingWords = Array.FindAll(wordList, element => element.StartsWith(searchedString));
                 timer.Stop();
                 LblFindAllMethodTime.Content = timer.ElapsedMilliseconds + " ms";
 
@@ -101,10 +107,10 @@ namespace StringSearch
         {
             if (WordList.IsAvailable())
             {
-                List<string> matchingWords = new List<string>();
+                matchingWords.Clear();
                 timer.Reset();
                 timer.Start();
-                int usedThreads = WordList.ParallelLinearSearch(wordList, searchedString, matchingWords);
+                WordList.ParallelLinearSearch(wordList, searchedString, matchingWords, MaxAllowedThreads);
                 timer.Stop();
                 LblParallelLinearSearchTime.Content = timer.ElapsedMilliseconds + " ms";
 
@@ -113,8 +119,89 @@ namespace StringSearch
                 WordList.DisplayList(matchingWords, LbParallelLinearSearchResults);
                 timer.Stop();
                 LblParallelLinearSearchUITime.Content = timer.ElapsedMilliseconds + " ms";
-                LblParallelLinearSearchWordsCount.Content = LbParallelLinearSearchResults.Items.Count + "\nBenutzte Threads: " + usedThreads + "\nProcessor Count: " + Environment.ProcessorCount;
+                LblParallelLinearSearchWordsCount.Content = LbParallelLinearSearchResults.Items.Count + "\nThreads: " + MaxAllowedThreads;
             }
         }
+
+        private void BtnSerialBinarySearch_Click(object sender, RoutedEventArgs e)
+        {
+            if(sortedListIsNotAvailable)
+            {
+                sortedWordList = (string[])wordList.Clone();
+                timer.Reset();
+                timer.Start();
+                Array.Sort(sortedWordList);
+                timer.Stop();
+                LblSerialBinarySearchSortListTime.Content = timer.ElapsedMilliseconds + " ms";
+                WordList.Display(sortedWordList, LbRandomWordList);
+                sortedListIsNotAvailable = false;
+            }
+
+            List<string> matchingWords = new List<string>();
+            timer.Reset();
+            timer.Start();
+            WordList.SerialBinarySearch(sortedWordList, searchedString, matchingWords);
+            timer.Stop();
+            LblSerialBinarySearchTime.Content = timer.ElapsedMilliseconds + " ms";
+
+            timer.Reset();
+            timer.Start();
+            WordList.DisplayList(matchingWords, LbSerialBinarySearchResults);
+            timer.Stop();
+            LblSerialBinarySearchUITime.Content = timer.ElapsedMilliseconds + " ms";
+            LblSerialBinarySearchWordsCount.Content = LbSerialBinarySearchResults.Items.Count;
+        }
+
+        private void RBtn1_Checked(object sender, RoutedEventArgs e)
+        {
+            MaxAllowedThreads = 1;
+        }
+
+        private void RBtn2_Checked(object sender, RoutedEventArgs e)
+        {
+            if(Environment.ProcessorCount < 2)
+            {
+                NotifyUserAboutMaxThreadsAvailable();
+                RBtn2.IsChecked = false;
+                RBtnMax.IsChecked = true;
+            }
+            MaxAllowedThreads = Math.Min(2, Environment.ProcessorCount);
+        }
+
+        private void RBtn4_Checked(object sender, RoutedEventArgs e)
+        {
+            if (Environment.ProcessorCount < 4)
+            {
+                NotifyUserAboutMaxThreadsAvailable();
+                RBtn4.IsChecked = false;
+                RBtnMax.IsChecked = true;
+            }
+            MaxAllowedThreads = Math.Min(4, Environment.ProcessorCount);
+        }
+
+        private void RBtn8_Checked(object sender, RoutedEventArgs e)
+        {
+            if (Environment.ProcessorCount < 8)
+            {
+                NotifyUserAboutMaxThreadsAvailable();
+                RBtn8.IsChecked = false;
+                RBtnMax.IsChecked = true;
+            }
+            MaxAllowedThreads = Math.Min(8, Environment.ProcessorCount);
+        }
+
+        private void RBtnMax_Checked(object sender, RoutedEventArgs e)
+        {
+            MaxAllowedThreads = Environment.ProcessorCount;
+        }
+
+        private void NotifyUserAboutMaxThreadsAvailable()
+        {
+            string title = "Zu viele Threads für dieses System";
+            string message = "Auf diesem System stehen nur " + Environment.ProcessorCount + " Threads zur Verfügung! Die maximale Anzahl der für die Operation erlaubten Threads wurde auf " + Environment.ProcessorCount + " gesetzt.";
+            MessageBox.Show(message, title);
+        }
+
+
     }
 }

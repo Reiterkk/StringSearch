@@ -22,8 +22,8 @@ namespace StringSearch
             {
                 return true;
             }
-            string message = "Es wurde noch keine Wortliste erstellt, daher gibt es noch nichts zu durchsuchen! Bitte zuerst eine Wortliste generieren.";
             string title = "Keine Wortliste vorhanden";
+            string message = "Es wurde noch keine Wortliste erstellt, daher gibt es noch nichts zu durchsuchen! Bitte zuerst eine Wortliste generieren.";
             MessageBox.Show(message, title);
             return false;
         }
@@ -64,6 +64,11 @@ namespace StringSearch
             ShuffledListIsAvailable = true;
         }
 
+        public void Sort(string[] wordlist)
+        {
+            Array.Sort(wordlist);
+        }
+
         public static void Display(string[] wordList, ListBox listBox)
         {
             listBox.Items.Clear();
@@ -87,40 +92,40 @@ namespace StringSearch
             for (int i = 0; i < wordList.Length; i++)
             {
                 //Thread.Sleep(1);
+                //if (wordList[i].StartsWith(searchedString, StringComparison.Ordinal))
                 if (wordList[i].StartsWith(searchedString))
-                {
+                    {
                     matchingWords.Add(wordList[i]);
                 }
             }
         }
 
-        public static int ParallelLinearSearch(string[] wordList, string searchedString, List<string> matchingWords)
+        public static void ParallelLinearSearch(string[] wordList, string searchedString, List<string> matchingWords, int maxAllowedThreads)
         {
-            ConcurrentBag<int> threadIDs = new ConcurrentBag<int>();
+            //ConcurrentBag<int> threadIDs = new ConcurrentBag<int>();
 
-            Parallel.ForEach(Partitioner.Create(0, wordList.Length), new ParallelOptions { MaxDegreeOfParallelism = -1 }, () => new List<string>(), (range, state, tmpList) =>
+            Parallel.ForEach(Partitioner.Create(0, wordList.Length), new ParallelOptions { MaxDegreeOfParallelism = maxAllowedThreads }, (range, state) =>
             {
-                threadIDs.Add(Thread.CurrentThread.ManagedThreadId);
+                //threadIDs.Add(Thread.CurrentThread.ManagedThreadId);
 
                 for (int i = range.Item1; i < range.Item2; i++)
                 {
+                    //if (wordList[i].StartsWith(searchedString, StringComparison.Ordinal))
                     if (wordList[i].StartsWith(searchedString))
                     {
-                        tmpList.Add(wordList[i]);
-                        //lock (matchingWords)
-                        //{
-                        //    matchingWords.Add(wordList[i]);
-                        //}
+                        lock (matchingWords)
+                        {
+                            matchingWords.Add(wordList[i]);
+                        }
                     }
                 }
-                return tmpList;
-            }, tmpList => { lock (matchingWords) matchingWords.AddRange(tmpList); });
+            });
 
-            //Parallel.For(0, wordList.Length, new ParallelOptions { MaxDegreeOfParallelism = -1 }, (i) =>
+            //Parallel.For(0, wordList.Length, new ParallelOptions { MaxDegreeOfParallelism = maxAllowedThreads }, (i) =>
             //{
             //    threadIDs.Add(Thread.CurrentThread.ManagedThreadId);
             //    //Thread.Sleep(1);
-            //    if (wordList[i].StartsWith(searchedString))
+            //    if (wordList[i].StartsWith(searchedString, StringComparison.Ordinal))
             //    {
             //        lock(matchingWords)
             //        {
@@ -129,8 +134,48 @@ namespace StringSearch
             //    }
             //});
 
-            int usedThreads = threadIDs.Distinct().Count();
-            return usedThreads;
+            //int usedThreads = threadIDs.Distinct().Count();
+            //return usedThreads;
+        }
+
+        public static void SerialBinarySearch(string[] sortedWordList, string searchedString, List<string> matchingWords)
+        {
+            int minIndex = 0;
+            int maxIndex = sortedWordList.Length -1;
+            int matchingIndex = -1;
+
+            while(minIndex <= maxIndex)
+            {
+                int middleIndex = (minIndex + maxIndex) / 2;
+                if (sortedWordList[middleIndex].StartsWith(searchedString))
+                {
+                    matchingIndex = middleIndex;
+                    break;
+                //} else if ( String.CompareOrdinal(sortedWordList[middleIndex], 0, searchedString, 0, searchedString.Length) < 0)
+                } else if ( String.Compare(sortedWordList[middleIndex].Substring(0, searchedString.Length), searchedString) < 0)
+            {
+                    minIndex = middleIndex + 1;
+                } else
+                {
+                    maxIndex = middleIndex - 1;
+                }
+            }
+
+            if (matchingIndex > -1)
+            {
+                int i = matchingIndex;
+                while (i >= 0 && sortedWordList[i].StartsWith(searchedString))
+                {
+                    matchingWords.Add(sortedWordList[i--]);
+                }
+
+                i = matchingIndex + 1;
+                while (i <= sortedWordList.Length && sortedWordList[i].StartsWith(searchedString))
+                {
+                    matchingWords.Add(sortedWordList[i++]);
+                }
+            }
+
         }
     }
 }

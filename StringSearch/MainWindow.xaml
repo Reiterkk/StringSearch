@@ -22,32 +22,51 @@
         <Label x:Name="LblNumberOfWords" Content="Anzahl erzeugter Wörter:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="9,150,0,0" VerticalAlignment="Top"/>
         <Label x:Name="LblListboxItemCount" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="9,165,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TbSearchString" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="15,229,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TbSearchString_TextChanged"/>
+        <RadioButton x:Name="RBtn1" Content="1" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="14,292,0,0" VerticalAlignment="Top" IsChecked="True" Checked="RBtn1_Checked"/>
+        <RadioButton x:Name="RBtn2" Content="2" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="14,312,0,0" VerticalAlignment="Top" Checked="RBtn2_Checked"/>
+        <RadioButton x:Name="RBtn4" Content="4" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="14,332,0,0" VerticalAlignment="Top" Checked="RBtn4_Checked"/>
+        <RadioButton x:Name="RBtn8" Content="8" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="14,352,0,0" VerticalAlignment="Top" Checked="RBtn8_Checked"/>
+        <RadioButton x:Name="RBtnMax" Content="System Max" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="14,372,0,0" VerticalAlignment="Top" Checked="RBtnMax_Checked"/>
+        <Label x:Name="LblMaxThreads" Content="Maxium an Threads" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="9,268,0,0" VerticalAlignment="Top"/>
         <Label x:Name="LblSerialLinearSearchString" Content="Suchstring" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="9,205,0,0" VerticalAlignment="Top"/>
-        <ListBox x:Name="LbSerialLinearSearchResults" Grid.ColumnSpan="3" Margin="500,45,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="130" Height="720"/>
+
+        <ListBox x:Name="LbSerialLinearSearchResults" Grid.ColumnSpan="3" Margin="500,45,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="130" Height="330"/>
         <Label x:Name="LblSerialLinearSearch" Content="Liste durchsucht in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="339,70,0,0" VerticalAlignment="Top"/>
         <Label x:Name="LblSerialLinearSearchTime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="339,85,0,0" VerticalAlignment="Top"/>
         <Label x:Name="LblSerialLinearSearchUI" Content="UI aktualisiert in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="339,110,0,0" VerticalAlignment="Top"/>
         <Label x:Name="LblSerialLinearSearchUITime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="339,125,0,0" VerticalAlignment="Top"/>
         <Label x:Name="LblSerialLinearSearchWords" Content="Anzahl gefundener Wörter:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="339,150,0,0" VerticalAlignment="Top"/>
         <Label x:Name="LblSerialLinearSearchWordsCount" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="339,165,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="BtnSerialLinearSearch" Content="Serielle Suche" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="345,45,0,0" VerticalAlignment="Top" Width="135" Click="BtnSerialLinearSearch_Click"/>
-        <ListBox x:Name="LbFindAllMethodResults" Grid.ColumnSpan="3" Margin="830,45,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="130" Height="720"/>
-        <Label x:Name="LblFindAllMethod" Content="Liste durchsucht in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,70,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblFindAllMethodTime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,85,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblFindAllMethodUI" Content="UI aktualisiert in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,110,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblFindAllMethodUITime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,125,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblFindAllMethodWords" Content="Anzahl gefundener Wörter:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,150,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblFindAllMethodWordsCount" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,165,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="BtnFindAllMethod" Content="Array.FindAll() Methode" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="675,45,0,0" VerticalAlignment="Top" Width="135" Click="BtnFindAllMethod_Click"/>
-        <ListBox x:Name="LbParallelLinearSearchResults" Grid.ColumnSpan="3" Margin="1160,45,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="130" Height="720"/>
-        <Label x:Name="LblParallelLinearSearch" Content="Liste durchsucht in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,70,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblParallelLinearSearchTime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,85,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblParallelLinearSearchUI" Content="UI aktualisiert in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,110,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblParallelLinearSearchUITime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,125,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblParallelLinearSearchWords" Content="Anzahl gefundener Wörter:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,150,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblParallelLinearSearchWordsCount" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,165,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="BtnParallelLinearSearch" Content="Parallele Suche" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="1005,45,0,0" VerticalAlignment="Top" Width="135" Click="BtnParallelLinearSearch_Click"/>
+        <Button x:Name="BtnSerialLinearSearch" Content="Serielle lineare Suche" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="345,45,0,0" VerticalAlignment="Top" Width="135" Click="BtnSerialLinearSearch_Click"/>
 
+        <ListBox x:Name="LbParallelLinearSearchResults" Grid.ColumnSpan="3" Margin="500,435,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="130" Height="330"/>
+        <Label x:Name="LblParallelLinearSearch" Content="Liste durchsucht in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="339,460,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblParallelLinearSearchTime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="339,475,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblParallelLinearSearchUI" Content="UI aktualisiert in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="339,500,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblParallelLinearSearchUITime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="339,515,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblParallelLinearSearchWords" Content="Anzahl gefundener Wörter:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="339,540,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblParallelLinearSearchWordsCount" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="339,555,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="BtnParallelLinearSearch" Content="Parallele lineare Suche" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="345,435,0,0" VerticalAlignment="Top" Width="135" Click="BtnParallelLinearSearch_Click"/>
+
+        <ListBox x:Name="LbSerialBinarySearchResults" Grid.ColumnSpan="3" Margin="830,45,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="130" Height="330"/>
+        <Label x:Name="LblSerialBinarySearchSortList" Content="Liste sortiert in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,70,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblSerialBinarySearchSortListTime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,85,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblSerialBinarySearch" Content="Liste durchsucht in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,110,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblSerialBinarySearchTime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,125,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblSerialBinarySearchUI" Content="UI aktualisiert in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,150,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblSerialBinarySearchUITime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,165,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblSerialBinarySearchWords" Content="Anzahl gefundener Wörter:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,190,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblSerialBinarySearchWordsCount" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,205,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="BtnSerialBinarySearch" Content="Serielle binäre Suche" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="675,45,0,0" VerticalAlignment="Top" Width="135" Click="BtnSerialBinarySearch_Click"/>
+
+        <ListBox x:Name="LbFindAllMethodResults" Grid.ColumnSpan="3" Margin="1160,45,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="130" Height="330"/>
+        <Label x:Name="LblFindAllMethod" Content="Liste durchsucht in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,70,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblFindAllMethodTime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,85,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblFindAllMethodUI" Content="UI aktualisiert in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,110,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblFindAllMethodUITime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,125,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblFindAllMethodWords" Content="Anzahl gefundener Wörter:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,150,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblFindAllMethodWordsCount" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,165,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="BtnFindAllMethod" Content="Array.FindAll() Methode" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="1005,45,0,0" VerticalAlignment="Top" Width="135" Click="BtnFindAllMethod_Click"/>
 
     </Grid>
 </Window>
