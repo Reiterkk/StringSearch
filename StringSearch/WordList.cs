@@ -98,7 +98,7 @@ namespace StringSearch
         {
             ConcurrentBag<int> threadIDs = new ConcurrentBag<int>();
 
-            Parallel.ForEach(Partitioner.Create(0, wordList.Length), new ParallelOptions { MaxDegreeOfParallelism = -1 }, (range, state) =>
+            Parallel.ForEach(Partitioner.Create(0, wordList.Length), new ParallelOptions { MaxDegreeOfParallelism = -1 }, () => new List<string>(), (range, state, tmpList) =>
             {
                 threadIDs.Add(Thread.CurrentThread.ManagedThreadId);
 
@@ -106,13 +106,15 @@ namespace StringSearch
                 {
                     if (wordList[i].StartsWith(searchedString))
                     {
-                        lock (matchingWords)
-                        {
-                            matchingWords.Add(wordList[i]);
-                        }
+                        tmpList.Add(wordList[i]);
+                        //lock (matchingWords)
+                        //{
+                        //    matchingWords.Add(wordList[i]);
+                        //}
                     }
                 }
-            });
+                return tmpList;
+            }, tmpList => { lock (matchingWords) matchingWords.AddRange(tmpList); });
 
             //Parallel.For(0, wordList.Length, new ParallelOptions { MaxDegreeOfParallelism = -1 }, (i) =>
             //{
