@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
@@ -92,19 +94,41 @@ namespace StringSearch
             }
         }
 
-        public static void ParallelLinearSearch(string[] wordList, string searchedString, List<string> matchingWords)
+        public static int ParallelLinearSearch(string[] wordList, string searchedString, List<string> matchingWords)
         {
-            Parallel.For(0, wordList.Length, (i) =>
+            ConcurrentBag<int> threadIDs = new ConcurrentBag<int>();
+
+            Parallel.ForEach(Partitioner.Create(0, wordList.Length), new ParallelOptions { MaxDegreeOfParallelism = -1 }, (range, state) =>
             {
-                //Thread.Sleep(1);
-                if (wordList[i].StartsWith(searchedString))
+                threadIDs.Add(Thread.CurrentThread.ManagedThreadId);
+
+                for (int i = range.Item1; i < range.Item2; i++)
                 {
-                    lock(matchingWords)
+                    if (wordList[i].StartsWith(searchedString))
                     {
-                        matchingWords.Add(wordList[i]);
+                        lock (matchingWords)
+                        {
+                            matchingWords.Add(wordList[i]);
+                        }
                     }
                 }
             });
+
+            //Parallel.For(0, wordList.Length, new ParallelOptions { MaxDegreeOfParallelism = -1 }, (i) =>
+            //{
+            //    threadIDs.Add(Thread.CurrentThread.ManagedThreadId);
+            //    //Thread.Sleep(1);
+            //    if (wordList[i].StartsWith(searchedString))
+            //    {
+            //        lock(matchingWords)
+            //        {
+            //            matchingWords.Add(wordList[i]);
+            //        }
+            //    }
+            //});
+
+            int usedThreads = threadIDs.Distinct().Count();
+            return usedThreads;
         }
     }
 }

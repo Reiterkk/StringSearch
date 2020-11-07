@@ -104,7 +104,7 @@ namespace StringSearch
                 List<string> matchingWords = new List<string>();
                 timer.Reset();
                 timer.Start();
-                WordList.ParallelLinearSearch(wordList, searchedString, matchingWords);
+                int usedThreads = WordList.ParallelLinearSearch(wordList, searchedString, matchingWords);
                 timer.Stop();
                 LblParallelLinearSearchTime.Content = timer.ElapsedMilliseconds + " ms";
 
@@ -113,7 +113,7 @@ namespace StringSearch
                 WordList.DisplayList(matchingWords, LbParallelLinearSearchResults);
                 timer.Stop();
                 LblParallelLinearSearchUITime.Content = timer.ElapsedMilliseconds + " ms";
-                LblParallelLinearSearchWordsCount.Content = LbParallelLinearSearchResults.Items.Count;
+                LblParallelLinearSearchWordsCount.Content = LbParallelLinearSearchResults.Items.Count + "\nBenutzte Threads: " + usedThreads + "\nProcessor Count: " + Environment.ProcessorCount;
             }
         }
     }
