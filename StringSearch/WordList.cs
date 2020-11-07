@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
@@ -9,6 +12,20 @@ namespace StringSearch
 {
     class WordList
     {
+        private static bool ShuffledListIsAvailable { get; set; } = false;
+
+        public static bool IsAvailable()
+        {
+            if (ShuffledListIsAvailable)
+            {
+                return true;
+            }
+            string message = "Es wurde noch keine Wortliste erstellt, daher gibt es noch nichts zu durchsuchen! Bitte zuerst eine Wortliste generieren.";
+            string title = "Keine Wortliste vorhanden";
+            MessageBox.Show(message, title);
+            return false;
+        }
+
         public static void Create(string[] wordList, string[] letters, int dimension)
         {
             int index = 0;
@@ -42,6 +59,7 @@ namespace StringSearch
                 wordList[randomIndex] = tempString;
 
             }
+            ShuffledListIsAvailable = true;
         }
 
         public static void Display(string[] wordList, ListBox listBox)
@@ -64,15 +82,29 @@ namespace StringSearch
 
         public static void SerialLinearSearch(string[] wordList, string searchedString, List<string> matchingWords)
         {
-            //List<string> matchingWords = new List<string>();
             for (int i = 0; i < wordList.Length; i++)
             {
+                //Thread.Sleep(1);
                 if (wordList[i].StartsWith(searchedString))
                 {
                     matchingWords.Add(wordList[i]);
                 }
             }
-            //return matchingWords;
+        }
+
+        public static void ParallelLinearSearch(string[] wordList, string searchedString, List<string> matchingWords)
+        {
+            Parallel.For(0, wordList.Length, (i) =>
+            {
+                //Thread.Sleep(1);
+                if (wordList[i].StartsWith(searchedString))
+                {
+                    lock(matchingWords)
+                    {
+                        matchingWords.Add(wordList[i]);
+                    }
+                }
+            });
         }
     }
 }

@@ -39,6 +39,14 @@
         <Label x:Name="LblFindAllMethodWords" Content="Anzahl gefundener Wörter:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,150,0,0" VerticalAlignment="Top"/>
         <Label x:Name="LblFindAllMethodWordsCount" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,165,0,0" VerticalAlignment="Top"/>
         <Button x:Name="BtnFindAllMethod" Content="Array.FindAll() Methode" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="675,45,0,0" VerticalAlignment="Top" Width="135" Click="BtnFindAllMethod_Click"/>
+        <ListBox x:Name="LbParallelLinearSearchResults" Grid.ColumnSpan="3" Margin="1160,45,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="130" Height="720"/>
+        <Label x:Name="LblParallelLinearSearch" Content="Liste durchsucht in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,70,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblParallelLinearSearchTime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,85,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblParallelLinearSearchUI" Content="UI aktualisiert in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,110,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblParallelLinearSearchUITime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,125,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblParallelLinearSearchWords" Content="Anzahl gefundener Wörter:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,150,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="LblParallelLinearSearchWordsCount" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,165,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="BtnParallelLinearSearch" Content="Parallele Suche" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="1005,45,0,0" VerticalAlignment="Top" Width="135" Click="BtnParallelLinearSearch_Click"/>
 
 
     </Grid>
