@@ -152,7 +152,7 @@ namespace StringSearch
                     matchingIndex = middleIndex;
                     break;
                 //} else if ( String.CompareOrdinal(sortedWordList[middleIndex], 0, searchedString, 0, searchedString.Length) < 0)
-                } else if ( String.Compare(sortedWordList[middleIndex].Substring(0, searchedString.Length), searchedString) < 0)
+                } else if ( String.Compare(sortedWordList[middleIndex].Substring(0, Math.Min(searchedString.Length, sortedWordList[middleIndex].Length)), searchedString) <= 0)
             {
                     minIndex = middleIndex + 1;
                 } else
@@ -170,12 +170,25 @@ namespace StringSearch
                 }
 
                 i = matchingIndex + 1;
-                while (i <= sortedWordList.Length && sortedWordList[i].StartsWith(searchedString))
+                while (i < sortedWordList.Length && sortedWordList[i].StartsWith(searchedString))
                 {
                     matchingWords.Add(sortedWordList[i++]);
                 }
             }
 
+        }
+
+        public static List<string> SerialLinearListSearch(List<string> wordList, string searchedString)
+        {
+            List<string> matchingWords = new List<string>();
+            for (int i = 0; i < wordList.Count; i++)
+            {
+                if (wordList[i].StartsWith(searchedString))
+                {
+                    matchingWords.Add(wordList[i]);
+                }
+            }
+            return matchingWords;
         }
     }
 }

@@ -30,6 +30,9 @@ namespace StringSearch
         private string searchedString = "";
         private bool sortedListIsNotAvailable = true;
         List<string> matchingWords = new List<string>();
+        List<List<string>> IncrementalMatchingWords = new List<List<string>>();
+        private int lastStringLength = 0;
+        private int lastListCount = 1;
 
         public int MaxAllowedThreads { get; set; } = 1;
         public MainWindow()
@@ -50,6 +53,7 @@ namespace StringSearch
             {
                 WordList.Create(wordList, letters, dimension);
                 WordList.Shuffle(wordList);
+                IncrementalMatchingWords.Add(wordList.ToList());
             });
             await Task.WhenAll(t);
             timer.Stop();
@@ -125,31 +129,36 @@ namespace StringSearch
 
         private void BtnSerialBinarySearch_Click(object sender, RoutedEventArgs e)
         {
-            if(sortedListIsNotAvailable)
+            if(WordList.IsAvailable())
             {
-                sortedWordList = (string[])wordList.Clone();
+                if (sortedListIsNotAvailable)
+                {
+                    sortedWordList = (string[])wordList.Clone();
+                    timer.Reset();
+                    timer.Start();
+                    //Array.Sort(sortedWordList);
+                    sortedWordList = sortedWordList.AsParallel().WithDegreeOfParallelism(MaxAllowedThreads).OrderBy(t => t).ToArray();
+                    timer.Stop();
+                    LblSerialBinarySearchSortListTime.Content = timer.ElapsedMilliseconds + " ms";
+                    WordList.Display(sortedWordList, LbRandomWordList);
+                    sortedListIsNotAvailable = false;
+                }
+
+                List<string> matchingWords = new List<string>();
                 timer.Reset();
                 timer.Start();
-                Array.Sort(sortedWordList);
+                WordList.SerialBinarySearch(sortedWordList, searchedString, matchingWords);
                 timer.Stop();
-                LblSerialBinarySearchSortListTime.Content = timer.ElapsedMilliseconds + " ms";
-                WordList.Display(sortedWordList, LbRandomWordList);
-                sortedListIsNotAvailable = false;
+                LblSerialBinarySearchTime.Content = timer.ElapsedMilliseconds + " ms";
+
+                timer.Reset();
+                timer.Start();
+                WordList.DisplayList(matchingWords, LbSerialBinarySearchResults);
+                timer.Stop();
+                LblSerialBinarySearchUITime.Content = timer.ElapsedMilliseconds + " ms";
+                LblSerialBinarySearchWordsCount.Content = LbSerialBinarySearchResults.Items.Count;
+
             }
-
-            List<string> matchingWords = new List<string>();
-            timer.Reset();
-            timer.Start();
-            WordList.SerialBinarySearch(sortedWordList, searchedString, matchingWords);
-            timer.Stop();
-            LblSerialBinarySearchTime.Content = timer.ElapsedMilliseconds + " ms";
-
-            timer.Reset();
-            timer.Start();
-            WordList.DisplayList(matchingWords, LbSerialBinarySearchResults);
-            timer.Stop();
-            LblSerialBinarySearchUITime.Content = timer.ElapsedMilliseconds + " ms";
-            LblSerialBinarySearchWordsCount.Content = LbSerialBinarySearchResults.Items.Count;
         }
 
         private void RBtn1_Checked(object sender, RoutedEventArgs e)
@@ -202,6 +211,74 @@ namespace StringSearch
             MessageBox.Show(message, title);
         }
 
+        private void TbIncrementalSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (lastStringLength > TbIncrementalSearch.Text.Length && TbIncrementalSearch.Text.Length > 0)
+            {
+                while (IncrementalMatchingWords.Count > TbIncrementalSearch.Text.Length)
+                {
+                    IncrementalMatchingWords.RemoveAt(IncrementalMatchingWords.Count - 1);
+                }
+                while (IncrementalMatchingWords.Count >= lastListCount && IncrementalMatchingWords.Count > 1)
+                {
+                    IncrementalMatchingWords.RemoveAt(IncrementalMatchingWords.Count - 1);
+                }
+            } 
+            else if (lastStringLength > TbIncrementalSearch.Text.Length && TbIncrementalSearch.Text.Length == 0)
+            {
+                while (IncrementalMatchingWords.Count > 1)
+                {
+                    IncrementalMatchingWords.RemoveAt(IncrementalMatchingWords.Count - 1);
+                }
+            }
+            lastStringLength = TbIncrementalSearch.Text.Length;
+            lastListCount = IncrementalMatchingWords.Count;
 
+            if (TbIncrementalSearch.Text.Length > 0)
+            {
+                if (WordList.IsAvailable())
+                {
+                    LbIncrementalSearchResults.Visibility = Visibility.Visible;
+
+                    matchingWords.Clear();
+                    TbSearchString.Text = TbIncrementalSearch.Text;
+                    timer.Reset();
+                    timer.Start();
+                    IncrementalMatchingWords.Add(WordList.SerialLinearListSearch(IncrementalMatchingWords[IncrementalMatchingWords.Count - 1], searchedString));
+                    timer.Stop();
+                    LblIncrementalSearchTime.Content = timer.ElapsedMilliseconds + " ms";
+
+                    timer.Reset();
+                    timer.Start();
+                    WordList.DisplayList(IncrementalMatchingWords[IncrementalMatchingWords.Count - 1], LbIncrementalSearchResults);
+                    timer.Stop();
+                    LblIncrementalSearchUITime.Content = timer.ElapsedMilliseconds + " ms";
+                    LblIncrementalSearchWordsCount.Content = LbIncrementalSearchResults.Items.Count;
+                }
+                else
+                {
+                    TbIncrementalSearch.Text = "";
+                }
+            } else
+            {
+                LbIncrementalSearchResults.Visibility = Visibility.Hidden;
+                LblIncrementalSearchTime.Content = "";
+                LblIncrementalSearchUITime.Content = "";
+                LblIncrementalSearchWordsCount.Content = "";
+                TbSearchString.Text = "";
+            }
+
+        }
+
+        private void LbIncrementalSearchResults_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListBox lb = sender as ListBox;
+            if (lb.SelectedIndex > -1)
+            {
+                TbIncrementalSearch.Text = lb.SelectedItem.ToString();
+                lb.Visibility = Visibility.Hidden;
+                lb.SelectedIndex = -1;
+            }
+        }
     }
 }
