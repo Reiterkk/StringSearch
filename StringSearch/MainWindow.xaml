@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StringSearch"
         mc:Ignorable="d"
-        Title="Wortsuche" Height="900" Width="1600"
-        WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="Wortsuche" Height="830" Width="1000"
+        WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0*"/>
@@ -68,16 +68,6 @@
         <Label x:Name="LblIncrementalSearchWordsCount" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,555,0,0" VerticalAlignment="Top"/>
         <Label x:Name="LblIncrementalSearchHead" Content="Inkrementelle Suche:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="669,432,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TbIncrementalSearch" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="830,435,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="135" TextChanged="TbIncrementalSearch_TextChanged" Height="17"/>
-
-
-        <ListBox x:Name="LbFindAllMethodResults" Grid.ColumnSpan="3" Margin="1160,45,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="135" Height="330"/>
-        <Label x:Name="LblFindAllMethod" Content="Liste durchsucht in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,70,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblFindAllMethodTime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,85,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblFindAllMethodUI" Content="UI aktualisiert in:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,110,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblFindAllMethodUITime" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,125,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblFindAllMethodWords" Content="Anzahl gefundener Wörter:" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,150,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="LblFindAllMethodWordsCount" Content="" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="999,165,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="BtnFindAllMethod" Content="Array.FindAll() Methode" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="1005,45,0,0" VerticalAlignment="Top" Width="135" Click="BtnFindAllMethod_Click"/>
 
     </Grid>
 </Window>

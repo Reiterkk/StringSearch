@@ -87,26 +87,6 @@ namespace StringSearch
             }
         }
 
-        private void BtnFindAllMethod_Click(object sender, RoutedEventArgs e)
-        {
-            if (WordList.IsAvailable())
-            {
-                timer.Reset();
-                timer.Start();
-                //string[] matchingWords = Array.FindAll(wordList, element => element.StartsWith(searchedString, StringComparison.Ordinal));
-                string[] matchingWords = Array.FindAll(wordList, element => element.StartsWith(searchedString));
-                timer.Stop();
-                LblFindAllMethodTime.Content = timer.ElapsedMilliseconds + " ms";
-
-                timer.Reset();
-                timer.Start();
-                WordList.Display(matchingWords, LbFindAllMethodResults);
-                timer.Stop();
-                LblFindAllMethodUITime.Content = timer.ElapsedMilliseconds + " ms";
-                LblFindAllMethodWordsCount.Content = LbFindAllMethodResults.Items.Count;
-            }
-        }
-
         private void BtnParallelLinearSearch_Click(object sender, RoutedEventArgs e)
         {
             if (WordList.IsAvailable())
