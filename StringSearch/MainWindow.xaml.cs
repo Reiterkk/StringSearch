@@ -170,18 +170,24 @@ namespace StringSearch
 
         private void RemoveFromIncrementalListIfSearchedStringGotShorter()
         {
-            if (LastStringLength > TbIncrementalSearch.Text.Length && TbIncrementalSearch.Text.Length > 0)
+            //current search string is shorter than the last one but not empty -> remove last list entries.
+            if (LastStringLength > TbIncrementalSearch.Text.Length && TbIncrementalSearch.Text.Length > 0) 
             {
+                /* If the characters were typed one after the other, the list should have SearchedString.Lenght entries before the search. 
+                  If a character has been removed, the list must be reduced until it only has SearchedString.Lenght entries.
+                  */
                 while (IncrementalMatchingWords.Count > TbIncrementalSearch.Text.Length)
                 {
                     IncrementalMatchingWords.RemoveAt(IncrementalMatchingWords.Count - 1);
                 }
+                // If the user selects a suggested word and then removes a character, the search must continue in the last list before the selection.
                 while (IncrementalMatchingWords.Count >= LastListCount && IncrementalMatchingWords.Count > 1)
                 {
                     IncrementalMatchingWords.RemoveAt(IncrementalMatchingWords.Count - 1);
                 }
             }
-            else if (TbIncrementalSearch.Text.Length == 0)
+            // Search string is empty -> remove all but the initial word list.
+            else if (TbIncrementalSearch.Text.Length == 0)  
             {
                 while (IncrementalMatchingWords.Count > 1)
                 {
