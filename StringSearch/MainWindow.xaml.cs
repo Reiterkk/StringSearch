@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -90,7 +89,7 @@ namespace StringSearch
 
         private void BtnSerialLinearSearch_Click(object sender, RoutedEventArgs e)
         {
-            if(WordList.IsAvailable("shuffled"))
+            if (WordList.IsAvailable("shuffled"))
             {
                 MatchingWords.Clear();
                 Timer.Reset();
@@ -157,7 +156,8 @@ namespace StringSearch
                 {
                     TbIncrementalSearch.Text = "";
                 }
-            } else
+            }
+            else
             {
                 LbIncrementalSearchResults.Visibility = Visibility.Hidden;
                 LblIncrementalSearchTime.Content = "";
@@ -171,7 +171,7 @@ namespace StringSearch
         private void RemoveFromIncrementalListIfSearchedStringGotShorter()
         {
             //current search string is shorter than the last one but not empty -> remove last list entries.
-            if (LastStringLength > TbIncrementalSearch.Text.Length && TbIncrementalSearch.Text.Length > 0) 
+            if (LastStringLength > TbIncrementalSearch.Text.Length && TbIncrementalSearch.Text.Length > 0)
             {
                 /* If the characters were typed one after the other, the list should have SearchedString.Lenght entries before the search. 
                   If a character has been removed, the list must be reduced until it only has SearchedString.Lenght entries.
@@ -187,7 +187,7 @@ namespace StringSearch
                 }
             }
             // Search string is empty -> remove all but the initial word list.
-            else if (TbIncrementalSearch.Text.Length == 0)  
+            else if (TbIncrementalSearch.Text.Length == 0)
             {
                 while (IncrementalMatchingWords.Count > 1)
                 {

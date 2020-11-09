@@ -3,8 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace StringSearch
 {
@@ -70,8 +68,8 @@ namespace StringSearch
 
         public static void Sort(int maxAllowedThreads)
         {
-            
-            if(!SortedListIsCreated)
+
+            if (!SortedListIsCreated)
             {
                 SortedWordList.Clear();
                 if (IsAvailable("shuffled"))
