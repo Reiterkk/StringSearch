@@ -2,115 +2,109 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
 
 namespace StringSearch
 {
     class WordList
     {
-        private static bool ShuffledListIsAvailable { get; set; } = false;
+        private const int dimension = 26;
+        public static bool ShuffledListIsCreated { get; set; } = false;
+        public static bool SortedListIsCreated { get; set; } = false;
+        private static string[] Letters { get; set; } = new string[dimension] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+        public static List<string> ShuffledWordList { get; set; } = new List<string>();
+        public static List<string> SortedWordList { get; set; } = new List<string>();
 
-        public static bool IsAvailable()
+        public static bool IsAvailable(string type)
         {
-            if (ShuffledListIsAvailable)
+            if (type == "shuffled" && ShuffledListIsCreated)
             {
                 return true;
             }
-            string title = "Keine Wortliste vorhanden";
-            string message = "Es wurde noch keine Wortliste erstellt, daher gibt es noch nichts zu durchsuchen! Bitte zuerst eine Wortliste generieren.";
-            MessageBox.Show(message, title);
+            else if (type == "sorted" && SortedListIsCreated)
+            {
+                return true;
+            }
+            Display.NoListAvailable();
             return false;
         }
 
-        public static void Create(string[] wordList, string[] letters, int dimension)
+        public static void Create()
         {
-            int index = 0;
+            SortedListIsCreated = false;
+            SortedWordList.Clear();
             for (int i = 0; i < dimension; i++)
             {
-                //Thread.Sleep(400);
                 for (int j = 0; j < dimension; j++)
                 {
                     for (int k = 0; k < dimension; k++)
                     {
                         for (int l = 0; l < dimension; l++)
                         {
-                            wordList[index++] = letters[i] + letters[j] + letters[k] + letters[l];
+                            SortedWordList.Add(Letters[i] + Letters[j] + Letters[k] + Letters[l]);
                         }
                     }
                 }
             }
         }
 
-        public static void Shuffle(string[] wordList)
+        public static void Shuffle()
         {
+            ShuffledWordList.Clear();
             //Fisher-Yates shuffle
             Random rnd = new Random();
-            int n = wordList.Length;
+            int n = SortedWordList.Count;
 
-            for (int i = n - 1; i > 0; i--)
+            for (int i = n - 1; i >= 0; i--)
             {
                 int randomIndex = rnd.Next(0, i + 1);
-                string tempString = wordList[i];
-                wordList[i] = wordList[randomIndex];
-                wordList[randomIndex] = tempString;
+                string tempString = SortedWordList[i];
+                ShuffledWordList.Add(SortedWordList[randomIndex]);
+                SortedWordList[randomIndex] = tempString;
 
             }
-            ShuffledListIsAvailable = true;
+            ShuffledListIsCreated = true;
         }
 
-        public void Sort(string[] wordlist)
+        public static void Sort(int maxAllowedThreads)
         {
-            Array.Sort(wordlist);
-        }
-
-        public static void Display(string[] wordList, ListBox listBox)
-        {
-            listBox.Items.Clear();
-            for (int i = 0; i < wordList.Length; i++)
+            
+            if(!SortedListIsCreated)
             {
-                listBox.Items.Add(wordList[i]);
-            }
-        }
-
-        public static void DisplayList(List<string> wordList, ListBox listBox)
-        {
-            listBox.Items.Clear();
-            for (int i = 0; i < wordList.Count; i++)
-            {
-                listBox.Items.Add(wordList[i]);
-            }
-        }
-
-        public static void SerialLinearSearch(string[] wordList, string searchedString, List<string> matchingWords)
-        {
-            for (int i = 0; i < wordList.Length; i++)
-            {
-                //Thread.Sleep(1);
-                //if (wordList[i].StartsWith(searchedString, StringComparison.Ordinal))
-                if (wordList[i].StartsWith(searchedString))
-                    {
-                    matchingWords.Add(wordList[i]);
+                SortedWordList.Clear();
+                if (IsAvailable("shuffled"))
+                {
+                    SortedWordList = ShuffledWordList.AsParallel().WithDegreeOfParallelism(maxAllowedThreads).OrderBy(word => word).ToList();
+                    SortedListIsCreated = true;
                 }
             }
         }
 
-        public static void ParallelLinearSearch(string[] wordList, string searchedString, List<string> matchingWords, int maxAllowedThreads)
+        public static List<string> SerialLinearSearch(List<string> wordList, string searchedString)
         {
-            //ConcurrentBag<int> threadIDs = new ConcurrentBag<int>();
+            List<string> matchingWords = new List<string>();
 
-            Parallel.ForEach(Partitioner.Create(0, wordList.Length), new ParallelOptions { MaxDegreeOfParallelism = maxAllowedThreads }, (range, state) =>
+            for (int i = 0; i < wordList.Count; i++)
             {
-                //threadIDs.Add(Thread.CurrentThread.ManagedThreadId);
+                if (wordList[i].StartsWith(searchedString))
+                {
+                    matchingWords.Add(wordList[i]);
+                }
+            }
 
+            return matchingWords;
+        }
+
+        public static List<string> ParallelLinearSearch(List<string> wordList, string searchedString, int maxAllowedThreads)
+        {
+            List<string> matchingWords = new List<string>();
+
+            Parallel.ForEach(Partitioner.Create(0, wordList.Count), new ParallelOptions { MaxDegreeOfParallelism = maxAllowedThreads }, (range, state) =>
+            {
                 for (int i = range.Item1; i < range.Item2; i++)
                 {
-                    //if (wordList[i].StartsWith(searchedString, StringComparison.Ordinal))
                     if (wordList[i].StartsWith(searchedString))
                     {
                         lock (matchingWords)
@@ -121,41 +115,30 @@ namespace StringSearch
                 }
             });
 
-            //Parallel.For(0, wordList.Length, new ParallelOptions { MaxDegreeOfParallelism = maxAllowedThreads }, (i) =>
-            //{
-            //    threadIDs.Add(Thread.CurrentThread.ManagedThreadId);
-            //    //Thread.Sleep(1);
-            //    if (wordList[i].StartsWith(searchedString, StringComparison.Ordinal))
-            //    {
-            //        lock(matchingWords)
-            //        {
-            //            matchingWords.Add(wordList[i]);
-            //        }
-            //    }
-            //});
-
-            //int usedThreads = threadIDs.Distinct().Count();
-            //return usedThreads;
+            return matchingWords;
         }
 
-        public static void SerialBinarySearch(string[] sortedWordList, string searchedString, List<string> matchingWords)
+        public static List<string> SerialBinarySearch(List<string> wordList, string searchedString)
         {
+            List<string> matchingWords = new List<string>();
+
             int minIndex = 0;
-            int maxIndex = sortedWordList.Length -1;
+            int maxIndex = wordList.Count - 1;
             int matchingIndex = -1;
 
-            while(minIndex <= maxIndex)
+            while (minIndex <= maxIndex)
             {
                 int middleIndex = (minIndex + maxIndex) / 2;
-                if (sortedWordList[middleIndex].StartsWith(searchedString))
+                if (wordList[middleIndex].StartsWith(searchedString))
                 {
                     matchingIndex = middleIndex;
                     break;
-                //} else if ( String.CompareOrdinal(sortedWordList[middleIndex], 0, searchedString, 0, searchedString.Length) < 0)
-                } else if ( String.Compare(sortedWordList[middleIndex].Substring(0, Math.Min(searchedString.Length, sortedWordList[middleIndex].Length)), searchedString) <= 0)
-            {
+                }
+                else if (String.Compare(wordList[middleIndex].Substring(0, Math.Min(searchedString.Length, wordList[middleIndex].Length)), searchedString) <= 0)
+                {
                     minIndex = middleIndex + 1;
-                } else
+                }
+                else
                 {
                     maxIndex = middleIndex - 1;
                 }
@@ -164,30 +147,18 @@ namespace StringSearch
             if (matchingIndex > -1)
             {
                 int i = matchingIndex;
-                while (i >= 0 && sortedWordList[i].StartsWith(searchedString))
+                while (i >= 0 && wordList[i].StartsWith(searchedString))
                 {
-                    matchingWords.Add(sortedWordList[i--]);
+                    matchingWords.Add(wordList[i--]);
                 }
 
                 i = matchingIndex + 1;
-                while (i < sortedWordList.Length && sortedWordList[i].StartsWith(searchedString))
+                while (i < SortedWordList.Count && wordList[i].StartsWith(searchedString))
                 {
-                    matchingWords.Add(sortedWordList[i++]);
+                    matchingWords.Add(wordList[i++]);
                 }
             }
 
-        }
-
-        public static List<string> SerialLinearListSearch(List<string> wordList, string searchedString)
-        {
-            List<string> matchingWords = new List<string>();
-            for (int i = 0; i < wordList.Count; i++)
-            {
-                if (wordList[i].StartsWith(searchedString))
-                {
-                    matchingWords.Add(wordList[i]);
-                }
-            }
             return matchingWords;
         }
     }
