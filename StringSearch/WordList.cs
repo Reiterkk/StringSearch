@@ -80,11 +80,11 @@ namespace StringSearch
             }
         }
 
-        public static List<string> SerialLinearSearch(List<string> wordList, string searchedString)
+        public static List<string> SerialLinearSearch(List<string> wordList, string searchedString, int start, int end)
         {
             List<string> matchingWords = new List<string>();
 
-            for (int i = 0; i < wordList.Count; i++)
+            for (int i = start; i < end; i++)
             {
                 if (wordList[i].StartsWith(searchedString))
                 {
@@ -97,22 +97,46 @@ namespace StringSearch
 
         public static List<string> ParallelLinearSearch(List<string> wordList, string searchedString, int maxAllowedThreads)
         {
+            //List<string> matchingWords = new List<string>();
+
+            //Parallel.ForEach(Partitioner.Create(0, wordList.Count), new ParallelOptions { MaxDegreeOfParallelism = maxAllowedThreads }, (range, state) =>
+            //{
+            //    for (int i = range.Item1; i < range.Item2; i++)
+            //    {
+            //        if (wordList[i].StartsWith(searchedString))
+            //        {
+            //            lock (matchingWords)
+            //            {
+            //                matchingWords.Add(wordList[i]);
+            //            }
+            //        }
+            //    }
+            //});
+
+            //return matchingWords;
+
+
             List<string> matchingWords = new List<string>();
 
-            Parallel.ForEach(Partitioner.Create(0, wordList.Count), new ParallelOptions { MaxDegreeOfParallelism = maxAllowedThreads }, (range, state) =>
-            {
-                for (int i = range.Item1; i < range.Item2; i++)
-                {
-                    if (wordList[i].StartsWith(searchedString))
-                    {
-                        lock (matchingWords)
-                        {
-                            matchingWords.Add(wordList[i]);
-                        }
-                    }
-                }
-            });
+            Task<List<string>>[] tasks = new Task<List<string>>[maxAllowedThreads];
 
+            int step = wordList.Count / maxAllowedThreads;
+
+            for (int i = 0; i < tasks.Length; i++)
+            {
+                int ilocal = i;
+                tasks[ilocal] = Task.Run(() =>
+                {
+                    List<string> result = new List<string>();
+                    result = SerialLinearSearch(wordList, searchedString, ilocal * step, (ilocal == tasks.Length - 1) ? wordList.Count : (ilocal + 1) * step);
+                    return result;
+                });
+            }
+            Task.WaitAll(tasks);
+            for (int i = 0; i < tasks.Length; i++)
+            {
+                matchingWords.AddRange(tasks[i].Result);
+            }
             return matchingWords;
         }
 

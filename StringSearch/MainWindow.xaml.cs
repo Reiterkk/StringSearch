@@ -94,7 +94,7 @@ namespace StringSearch
                 MatchingWords.Clear();
                 Timer.Reset();
                 Timer.Start();
-                MatchingWords = WordList.SerialLinearSearch(WordList.ShuffledWordList, SearchedString);
+                MatchingWords = WordList.SerialLinearSearch(WordList.ShuffledWordList, SearchedString, 0, WordList.ShuffledWordList.Count);
                 Timer.Stop();
                 Display.PrintResults(MatchingWords, LbSerialLinearSearchResults, LblSerialLinearSearchTime, Timer.ElapsedMilliseconds, LblSerialLinearSearchUITime, LblSerialLinearSearchWordsCount);
             }
@@ -148,7 +148,8 @@ namespace StringSearch
                     TbSearchString.Text = TbIncrementalSearch.Text;
                     Timer.Reset();
                     Timer.Start();
-                    IncrementalMatchingWords.Add(WordList.SerialLinearSearch(IncrementalMatchingWords[IncrementalMatchingWords.Count - 1], SearchedString));
+                    int end = IncrementalMatchingWords[IncrementalMatchingWords.Count - 1].Count;
+                    IncrementalMatchingWords.Add(WordList.SerialLinearSearch(IncrementalMatchingWords[IncrementalMatchingWords.Count - 1], SearchedString, 0, end));
                     Timer.Stop();
                     Display.PrintResults(IncrementalMatchingWords[IncrementalMatchingWords.Count - 1], LbIncrementalSearchResults, LblIncrementalSearchTime, Timer.ElapsedMilliseconds, LblIncrementalSearchUITime, LblIncrementalSearchWordsCount);
                 }
