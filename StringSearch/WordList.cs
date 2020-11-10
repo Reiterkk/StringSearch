@@ -51,13 +51,13 @@ namespace StringSearch
         public static void Shuffle()
         {
             ShuffledWordList.Clear();
-            //Fisher-Yates shuffle
+            // Fisher-Yates shuffle.
             Random rnd = new Random();
             int n = SortedWordList.Count;
 
             for (int i = n - 1; i >= 0; i--)
             {
-                int randomIndex = rnd.Next(0, i + 1);
+                int randomIndex = rnd.Next(0, i + 1); // Get random index between 0 and remaining unshuffled list item count.
                 string tempString = SortedWordList[i];
                 ShuffledWordList.Add(SortedWordList[randomIndex]);
                 SortedWordList[randomIndex] = tempString;
@@ -156,24 +156,27 @@ namespace StringSearch
                     matchingIndex = middleIndex;
                     break;
                 }
+                // String at current position < searched string.
                 else if (String.Compare(wordList[middleIndex].Substring(0, Math.Min(searchedString.Length, wordList[middleIndex].Length)), searchedString) <= 0)
                 {
-                    minIndex = middleIndex + 1;
+                    minIndex = middleIndex + 1; // Get rid of lower half.
                 }
-                else
+                else // String at current position > searched string. 
                 {
-                    maxIndex = middleIndex - 1;
+                    maxIndex = middleIndex - 1; // Get rid of upper half.
                 }
             }
 
             if (matchingIndex > -1)
             {
+                // Find every matching word below the matching index, including the latter.
                 int i = matchingIndex;
                 while (i >= 0 && wordList[i].StartsWith(searchedString))
                 {
                     matchingWords.Add(wordList[i--]);
                 }
 
+                // Find every matching word above the matching index.
                 i = matchingIndex + 1;
                 while (i < SortedWordList.Count && wordList[i].StartsWith(searchedString))
                 {
